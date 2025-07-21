@@ -38,7 +38,7 @@ const Index = () => {
 
   const models = [
     { name: 'GPT-4', status: 'inactive', accuracy: 94 },
-    { name: 'YandexGPT-5-Lite-8B-instruct', status: 'active', accuracy: 91 },
+    { name: 'YandexGPT-5-Lite-8B-instruct', status: 'active', accuracy: 95 },
     { name: 'LLaMA-2', status: 'inactive', accuracy: 87 },
   ];
 
