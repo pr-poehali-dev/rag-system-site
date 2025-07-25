@@ -16,25 +16,49 @@ export const DATABASE_OPTIONS = [
 
 // API function for document AI queries
 export const askDocumentAi = async (question: string, dbId: string) => {
+  const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.QUERY}`;
+  const payload = {
+    question: question,
+    db_id: dbId
+  };
+
+  console.log('🚀 Отправка запроса:', {
+    url,
+    method: 'POST',
+    payload
+  });
+
   try {
-    const response = await fetch(`${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.QUERY}`, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'ngrok-skip-browser-warning': 'true',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
       },
-      body: JSON.stringify({
-        question: question,
-        db_id: dbId
-      }),
+      body: JSON.stringify(payload),
+    });
+
+    console.log('📡 Ответ получен:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries())
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      console.error('❌ HTTP ошибка:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('Ответ сервера:', data);
+    console.log('✅ Данные получены:', data);
     
     if (data.status === 'success') {
       return {
@@ -42,10 +66,23 @@ export const askDocumentAi = async (question: string, dbId: string) => {
         sources: data.data.sources || []
       };
     } else {
-      throw new Error('Ошибка сервера');
+      console.error('❌ Ошибка в ответе сервера:', data);
+      throw new Error(`Ошибка сервера: ${data.message || 'Неизвестная ошибка'}`);
     }
   } catch (error) {
-    console.error('Ошибка запроса:', error);
-    return { error: 'Сервер недоступен' };
+    console.error('💥 Критическая ошибка запроса:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
+    
+    // Детальная диагностика ошибки
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      return { error: 'Ошибка сети: не удается подключиться к серверу. Проверьте CORS настройки.' };
+    } else if (error.message.includes('CORS')) {
+      return { error: 'Ошибка CORS: сервер блокирует запросы с этого домена.' };
+    } else {
+      return { error: `Ошибка подключения: ${error.message}` };
+    }
   }
 };
