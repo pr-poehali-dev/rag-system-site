@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import Icon from '@/components/ui/icon';
+import { apiCall, API_CONFIG } from '@/lib/api';
 
 const Index = () => {
   const [messages, setMessages] = useState([
@@ -25,15 +26,31 @@ const Index = () => {
     setInputValue('');
     setIsLoading(true);
     
-    // Симуляция ответа от RAG системы
-    setTimeout(() => {
+    try {
+      // Real API call to your ngrok endpoint
+      const response = await apiCall(API_CONFIG.ENDPOINTS.CHAT, {
+        method: 'POST',
+        body: JSON.stringify({ 
+          message: inputValue,
+          conversation_id: Date.now() // or use a proper conversation ID
+        }),
+      });
+      
       const aiResponse = {
         type: 'assistant',
-        content: 'Это демо-ответ от RAG системы. В продакшене здесь будет настоящий ответ на основе ваших документов.'
+        content: response.answer || response.message || 'No response received'
       };
       setMessages(prev => [...prev, aiResponse]);
+    } catch (error) {
+      console.error('API Error:', error);
+      const errorResponse = {
+        type: 'assistant',
+        content: 'Извините, произошла ошибка при обработке запроса.'
+      };
+      setMessages(prev => [...prev, errorResponse]);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const models = [
