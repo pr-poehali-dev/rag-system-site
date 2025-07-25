@@ -6,7 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import Icon from '@/components/ui/icon';
-import { apiCall, API_CONFIG } from '@/lib/api';
+import { askDocumentAi, DATABASE_OPTIONS } from '@/lib/api';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Index = () => {
   const [messages, setMessages] = useState([
@@ -17,6 +18,7 @@ const Index = () => {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedDb, setSelectedDb] = useState('1');
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -27,18 +29,16 @@ const Index = () => {
     setIsLoading(true);
     
     try {
-      // Real API call to your ngrok endpoint
-      const response = await apiCall(API_CONFIG.ENDPOINTS.CHAT, {
-        method: 'POST',
-        body: JSON.stringify({ 
-          message: inputValue,
-          conversation_id: Date.now() // or use a proper conversation ID
-        }),
-      });
+      const result = await askDocumentAi(inputValue, selectedDb);
+      
+      if (result.error) {
+        throw new Error(result.error);
+      }
       
       const aiResponse = {
         type: 'assistant',
-        content: response.answer || response.message || 'No response received'
+        content: result.answer,
+        sources: result.sources
       };
       setMessages(prev => [...prev, aiResponse]);
     } catch (error) {
@@ -122,7 +122,19 @@ const Index = () => {
                           ? 'bg-slate-100 text-slate-700'
                           : 'bg-white border text-slate-900'
                       }`}>
-                        {message.content}
+                        <div>{message.content}</div>
+                        {message.sources && message.sources.length > 0 && (
+                          <div className="mt-2 pt-2 border-t border-slate-200">
+                            <div className="text-xs text-slate-500 mb-1">Источники:</div>
+                            <div className="space-y-1">
+                              {message.sources.map((source, idx) => (
+                                <div key={idx} className="text-xs bg-slate-50 px-2 py-1 rounded">
+                                  {source}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -138,6 +150,28 @@ const Index = () => {
                       </div>
                     </div>
                   )}
+                </div>
+
+                {/* Database selector */}
+                <div className="mb-4">
+                  <label className="text-sm font-medium text-slate-700 mb-2 block">
+                    Выберите базу знаний:
+                  </label>
+                  <Select value={selectedDb} onValueChange={setSelectedDb}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Выберите базу данных" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DATABASE_OPTIONS.map((db) => (
+                        <SelectItem key={db.id} value={db.id}>
+                          <div className="flex flex-col">
+                            <span>{db.name}</span>
+                            <span className="text-xs text-slate-500">{db.description}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Input */}
