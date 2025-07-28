@@ -275,8 +275,8 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Features Section */}
-        <div className="mt-8 lg:mt-12">
+        {/* Features Section - Hidden on mobile */}
+        <div className="hidden lg:block mt-8 lg:mt-12">
           <h2 className="text-xl lg:text-2xl font-bold text-center mb-6 lg:mb-8">Возможности RAG системы</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
             <Card className="text-center">
