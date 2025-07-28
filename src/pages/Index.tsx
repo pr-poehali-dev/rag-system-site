@@ -97,11 +97,11 @@ const Index = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
+      <div className="container mx-auto px-4 py-4 lg:py-8 max-w-7xl">
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-8">
           {/* Main Chat Interface */}
           <div className="lg:col-span-2 order-1 lg:order-1">
-            <Card className="h-[70vh] lg:h-[600px] flex flex-col shadow-lg">
+            <Card className="h-[calc(100vh-12rem)] lg:h-[600px] flex flex-col shadow-lg">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center">
                   <Icon name="MessageCircle" size={20} className="mr-2" />
@@ -114,23 +114,23 @@ const Index = () => {
               
               <CardContent className="flex-1 flex flex-col p-0">
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto space-y-4 px-4 pt-2 pb-4 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
+                <div className="flex-1 overflow-y-auto space-y-4 px-4 pt-2 pb-4 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 min-h-0">
                   {messages.map((message, index) => (
                     <div key={index} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[85%] lg:max-w-[80%] p-3 rounded-lg text-sm lg:text-base ${
+                      <div className={`max-w-[90%] lg:max-w-[80%] p-3 rounded-lg text-sm lg:text-base break-words ${
                         message.type === 'user' 
                           ? 'bg-primary text-white' 
                           : message.type === 'system'
                           ? 'bg-slate-100 text-slate-700'
                           : 'bg-white border text-slate-900'
                       }`}>
-                        <div>{message.content}</div>
+                        <div className="whitespace-pre-wrap">{message.content}</div>
                         {message.sources && message.sources.length > 0 && (
                           <div className="mt-2 pt-2 border-t border-slate-200">
                             <div className="text-xs text-slate-500 mb-1">Источники:</div>
                             <div className="space-y-1">
                               {message.sources.map((source, idx) => (
-                                <div key={idx} className="text-xs bg-slate-50 px-2 py-1 rounded">
+                                <div key={idx} className="text-xs bg-slate-50 px-2 py-1 rounded break-words">
                                   {source}
                                 </div>
                               ))}
@@ -197,8 +197,8 @@ const Index = () => {
             </Card>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-4 lg:space-y-6 order-2 lg:order-2">
+          {/* Sidebar - Hidden on mobile */}
+          <div className="hidden lg:block space-y-4 lg:space-y-6 order-2 lg:order-2">
             {/* Stats */}
             <Card>
               <CardHeader>
