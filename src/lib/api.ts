@@ -1,5 +1,5 @@
 // API Configuration
-const API_URL = 'https://3e817a23be6e.ngrok-free.app/api/query';
+const API_URL = 'https://4cac346d0c37.ngrok-free.app/api/query';
 
 // Database options
 export const DATABASE_OPTIONS = [

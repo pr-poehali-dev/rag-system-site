@@ -102,7 +102,7 @@ const Index = () => {
           {/* Main Chat Interface */}
           <div className="lg:col-span-2 order-1 lg:order-1">
             <Card className="h-[70vh] lg:h-[600px] flex flex-col shadow-lg">
-              <CardHeader>
+              <CardHeader className="pb-3">
                 <CardTitle className="flex items-center">
                   <Icon name="MessageCircle" size={20} className="mr-2" />
                   Демо интерфейс RAG системы
@@ -112,9 +112,9 @@ const Index = () => {
                 </CardDescription>
               </CardHeader>
               
-              <CardContent className="flex-1 flex flex-col">
+              <CardContent className="flex-1 flex flex-col p-0">
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto mb-4 space-y-4 px-2 lg:px-0 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
+                <div className="flex-1 overflow-y-auto space-y-4 px-4 pt-2 pb-4 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
                   {messages.map((message, index) => (
                     <div key={index} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-[85%] lg:max-w-[80%] p-3 rounded-lg text-sm lg:text-base ${
@@ -154,41 +154,44 @@ const Index = () => {
                   )}
                 </div>
 
-                {/* Database selector */}
-                <div className="mb-3 lg:mb-4">
-                  <label className="text-xs lg:text-sm font-medium text-slate-700 mb-2 block">
-                    База знаний:
-                  </label>
-                  <Select value={selectedDb} onValueChange={setSelectedDb}>
-                    <SelectTrigger className="w-full text-sm">
-                      <SelectValue placeholder="Выберите базу данных" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {DATABASE_OPTIONS.map((db) => (
-                        <SelectItem key={db.id} value={db.id}>
-                          <div className="flex flex-col">
-                            <span className="text-sm">{db.name}</span>
-                            <span className="text-xs text-slate-500">{db.description}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                {/* Fixed Input Area at bottom */}
+                <div className="border-t bg-white p-4 space-y-3">
+                  {/* Database selector */}
+                  <div>
+                    <label className="text-xs lg:text-sm font-medium text-slate-700 mb-2 block">
+                      База знаний:
+                    </label>
+                    <Select value={selectedDb} onValueChange={setSelectedDb}>
+                      <SelectTrigger className="w-full text-sm">
+                        <SelectValue placeholder="Выберите базу данных" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {DATABASE_OPTIONS.map((db) => (
+                          <SelectItem key={db.id} value={db.id}>
+                            <div className="flex flex-col">
+                              <span className="text-sm">{db.name}</span>
+                              <span className="text-xs text-slate-500">{db.description}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                {/* Input */}
-                <div className="flex space-x-2 items-end">
-                  <Input 
-                    placeholder="Задайте вопрос..."
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
-                    className="flex-1 text-sm lg:text-base"
-                    disabled={isLoading}
-                  />
-                  <Button onClick={handleSendMessage} disabled={isLoading || !inputValue.trim()} className="shrink-0">
-                    <Icon name="Send" size={16} />
-                  </Button>
+                  {/* Input */}
+                  <div className="flex space-x-2 items-end">
+                    <Input 
+                      placeholder="Задайте вопрос..."
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
+                      className="flex-1 text-sm lg:text-base"
+                      disabled={isLoading}
+                    />
+                    <Button onClick={handleSendMessage} disabled={isLoading || !inputValue.trim()} className="shrink-0">
+                      <Icon name="Send" size={16} />
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
