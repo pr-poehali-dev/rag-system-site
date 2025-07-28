@@ -20,19 +20,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDb, setSelectedDb] = useState('1');
 
-  const testConnection = async () => {
-    console.log('🔍 Тест подключения к серверу...');
-    try {
-      const result = await askDocumentAi('тест подключения', selectedDb);
-      if (result.error) {
-        alert(`❌ Ошибка подключения: ${result.error}\n\nОткройте консоль браузера (F12) для деталей.`);
-      } else {
-        alert('✅ Подключение успешно! Сервер отвечает.');
-      }
-    } catch (error) {
-      alert(`❌ Критическая ошибка: ${error.message}`);
-    }
-  };
+
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
@@ -198,9 +186,6 @@ const Index = () => {
                     className="flex-1 text-sm lg:text-base"
                     disabled={isLoading}
                   />
-                  <Button onClick={testConnection} variant="outline" size="sm" className="shrink-0">
-                    <Icon name="Zap" size={14} />
-                  </Button>
                   <Button onClick={handleSendMessage} disabled={isLoading || !inputValue.trim()} className="shrink-0">
                     <Icon name="Send" size={16} />
                   </Button>
