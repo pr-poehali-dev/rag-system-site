@@ -109,11 +109,11 @@ const Index = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
           {/* Main Chat Interface */}
-          <div className="lg:col-span-2">
-            <Card className="h-[600px] flex flex-col">
+          <div className="lg:col-span-2 order-1 lg:order-1">
+            <Card className="h-[70vh] lg:h-[600px] flex flex-col shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Icon name="MessageCircle" size={20} className="mr-2" />
@@ -126,10 +126,10 @@ const Index = () => {
               
               <CardContent className="flex-1 flex flex-col">
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto mb-4 space-y-4">
+                <div className="flex-1 overflow-y-auto mb-4 space-y-4 px-2 lg:px-0 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100">
                   {messages.map((message, index) => (
                     <div key={index} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[80%] p-3 rounded-lg ${
+                      <div className={`max-w-[85%] lg:max-w-[80%] p-3 rounded-lg text-sm lg:text-base ${
                         message.type === 'user' 
                           ? 'bg-primary text-white' 
                           : message.type === 'system'
@@ -167,19 +167,19 @@ const Index = () => {
                 </div>
 
                 {/* Database selector */}
-                <div className="mb-4">
-                  <label className="text-sm font-medium text-slate-700 mb-2 block">
-                    Выберите базу знаний:
+                <div className="mb-3 lg:mb-4">
+                  <label className="text-xs lg:text-sm font-medium text-slate-700 mb-2 block">
+                    База знаний:
                   </label>
                   <Select value={selectedDb} onValueChange={setSelectedDb}>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full text-sm">
                       <SelectValue placeholder="Выберите базу данных" />
                     </SelectTrigger>
                     <SelectContent>
                       {DATABASE_OPTIONS.map((db) => (
                         <SelectItem key={db.id} value={db.id}>
                           <div className="flex flex-col">
-                            <span>{db.name}</span>
+                            <span className="text-sm">{db.name}</span>
                             <span className="text-xs text-slate-500">{db.description}</span>
                           </div>
                         </SelectItem>
@@ -189,18 +189,19 @@ const Index = () => {
                 </div>
 
                 {/* Input */}
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 items-end">
                   <Input 
-                    placeholder="Задайте вопрос по вашим документам..."
+                    placeholder="Задайте вопрос..."
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                    className="flex-1"
+                    onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleSendMessage()}
+                    className="flex-1 text-sm lg:text-base"
+                    disabled={isLoading}
                   />
-                  <Button onClick={testConnection} variant="outline" size="sm">
+                  <Button onClick={testConnection} variant="outline" size="sm" className="shrink-0">
                     <Icon name="Zap" size={14} />
                   </Button>
-                  <Button onClick={handleSendMessage} disabled={isLoading}>
+                  <Button onClick={handleSendMessage} disabled={isLoading || !inputValue.trim()} className="shrink-0">
                     <Icon name="Send" size={16} />
                   </Button>
                 </div>
@@ -209,7 +210,7 @@ const Index = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6 order-2 lg:order-2">
             {/* Stats */}
             <Card>
               <CardHeader>
@@ -287,9 +288,9 @@ const Index = () => {
         </div>
 
         {/* Features Section */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold text-center mb-8">Возможности RAG системы</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-8 lg:mt-12">
+          <h2 className="text-xl lg:text-2xl font-bold text-center mb-6 lg:mb-8">Возможности RAG системы</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
             <Card className="text-center">
               <CardContent className="pt-6">
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
